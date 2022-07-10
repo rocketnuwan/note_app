@@ -56,4 +56,33 @@ class SqlHelper {
     //mapping fetch data to notes model and return
     return result.map((e) => NoteModel.fromJson(e)).toList();
   }
+
+//update notes
+  static Future<int> updateNote(int id, String title, String desc) async {
+    final db = await initDB();
+
+    final data = {
+      'title': title,
+      'description': desc,
+      'createdAt': DateTime.now().toString()
+    };
+
+    final rId = await db.update(
+      'Notes',
+      data,
+      where: "id=?",
+      whereArgs: [id],
+    );
+    return rId;
+  }
+
+  static Future<void> deleteNote(int id) async {
+    final db = await initDB();
+
+    await db.delete(
+      'Notes',
+      where: "id=?",
+      whereArgs: [id],
+    );
+  }
 }

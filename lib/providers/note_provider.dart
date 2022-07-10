@@ -38,4 +38,37 @@ class NoteProvider extends ChangeNotifier {
     _allNodes = await SqlHelper.getNotes();
     notifyListeners();
   }
+
+  //set text controllers
+  void setTextControllers(NoteModel noteModel) {
+    titleController.text = noteModel.title;
+    descController.text = noteModel.title;
+
+    notifyListeners();
+  }
+
+//update nots
+  Future<void> updateNote(int id, BuildContext context) async {
+    await SqlHelper.updateNote(id, _title.text, _desc.text);
+
+    _title.clear();
+    _desc.clear();
+    await refershNotes();
+    notifyListeners();
+  }
+
+  Future<void> deleteNote(int id, BuildContext context) async {
+    await SqlHelper.deleteNote(
+      id,
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("You deleted a Note"),
+      ),
+    );
+
+    await refershNotes();
+    notifyListeners();
+  }
 }

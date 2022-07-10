@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:note_app/providers/note_provider.dart';
+import 'package:note_app/utils/dialogs.dart';
 import 'package:note_app/views/widgets/note_card.dart';
 import 'package:provider/provider.dart';
 
@@ -19,42 +20,6 @@ class _NoteViewState extends State<NoteView> {
   }
 
   //bottom sheet function
-  void showForm() {
-    showModalBottomSheet(
-        context: context,
-        builder: (_) {
-          return Container(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              child: Consumer<NoteProvider>(
-                builder: (context, value, child) {
-                  return Column(
-                    children: [
-                      TextField(
-                        controller: value.titleController,
-                        decoration: InputDecoration(hintText: "Title"),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextField(
-                        controller: value.descController,
-                        decoration: InputDecoration(hintText: "Description"),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      ElevatedButton(
-                          onPressed: () {
-                            value.addNewNote(context);
-                            Navigator.of(context).pop();
-                          },
-                          child: Text("Save Note")),
-                    ],
-                  );
-                },
-              ));
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,25 +29,30 @@ class _NoteViewState extends State<NoteView> {
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: () {
-            showForm();
+            Utils.showForm(context, null);
           },
-          label: Text("create note"),
-          icon: Icon(Icons.add),
+          label: const Text("create note"),
+          icon: const Icon(Icons.add),
         ),
         body: Consumer<NoteProvider>(
           builder: (context, value, child) {
             return value.allNodes.isEmpty
-                ? Text("no notes")
+                ? const Center(
+                    child: Text(
+                    "No any notes",
+                    style: TextStyle(color: Colors.red, fontSize: 20),
+                  ))
                 : ListView.separated(
-                    padding: EdgeInsets.all(15),
-                    physics: BouncingScrollPhysics(),
+                    padding: const EdgeInsets.all(15),
+                    physics: const BouncingScrollPhysics(),
                     itemBuilder: (context, index) {
                       return NoteCard(
-                        title: value.allNodes[index].title,
-                        desc: value.allNodes[index].description,
+                        // title: value.allNodes[index].title,
+                        // desc: value.allNodes[index].description,
+                        model: value.allNodes[index],
                       );
                     },
-                    separatorBuilder: (context, index) => SizedBox(
+                    separatorBuilder: (context, index) => const SizedBox(
                           height: 5,
                         ),
                     itemCount: value.allNodes.length);
